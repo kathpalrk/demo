@@ -1,24 +1,21 @@
 version: 0.2
+
 phases:
   pre_build:
-    command:
-      - echo Logging into Amazon ECR..
-      - aws --version
-      - $(aws ecr get-login --region eu-west-2 --no-include-email)
-      - REPOSITORY_URL=608970462845.dkr.ecr.eu-west-2.amazonaws.com/mydemo
-      - COMMIT_HASH=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7)
-      - IMAGE_TAG=build-$(echo $CODEBUILD_BUILD_ID | awk -F":" '{print $2}')
+    commands:
+      - echo Logging in to Amazon ECR...
+      - $(aws ecr get-login --no-include-email --region eu-west2)
+      #- cd web
   build:
-    command:
-      - echo Build started on 'date'
-      - echo Building the Docker image...
-      - docker build -t $REPOSITORY_URL:latest .
-      - docker tag $REPOSITORY_URL:latest $REPOSITORY_URL:$IMAGE_TAG
+    commands:
+      - echo Run unit test
+      #- docker-compose run web python test_basic.py
+      - echo Build started on `date`
+      - echo Building the Docker image...          
+      - docker build -t $IMAGE_REPO_NAME:$CODEBUILD_RESOLVED_SOURCE_VERSION .
+      - docker tag $IMAGE_REPO_NAME:$CODEBUILD_RESOLVED_SOURCE_VERSION $608970462845.dkr.ecr.eu-west-2.amazonaws.com/$IMAGE_REPO_NAME:$CODEBUILD_RESOLVED_SOURCE_VERSION      
   post_build:
-    command:
-      - echo Build completed on 'date'
-      - echo Pushing the Docker Images..
-      - docker push $REPOSITORY_URL:latest
-      - docker push $REPOSITORY_URL:$IMAGE_TAG
-      - echo writing images definitions file...
-      - docker push $REPOSITORY_URL:$IMAGE_TAG
+    commands:
+      - echo Build completed on `date`
+      - echo Pushing the Docker image...
+      - docker push $608970462845.dkr.ecr.eu-west-2.amazonaws.com/$IMAGE_REPO_NAME:$CODEBUILD_RESOLVED_SOURCE_VERSION
