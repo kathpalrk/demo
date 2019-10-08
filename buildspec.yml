@@ -2,7 +2,7 @@ version: 0.2
 phases:
   pre_build:
     commands:
-      - echo Logging into Amazon ECR..
+      - echo Logging in to Amazon ECR...
       - aws --version
       - $(aws ecr get-login --region eu-west-2 --no-include-email)
       - REPOSITORY_URI=608970462845.dkr.ecr.eu-west-2.amazonaws.com/mydemo
@@ -10,18 +10,18 @@ phases:
       - IMAGE_TAG=build-$(echo $CODEBUILD_BUILD_ID | awk -F":" '{print $2}')
   build:
     commands:
-      - echo Build started on 'date'
+      - echo Build started on `date`
       - echo Building the Docker image...
       - docker build -t $REPOSITORY_URI:latest .
       - docker tag $REPOSITORY_URI:latest $REPOSITORY_URI:$IMAGE_TAG
   post_build:
     commands:
-      - echo Build completed on 'date'
-      - echo Pushing the Docker Images..
+      - echo Build completed on `date`
+      - echo Pushing the Docker images...
       - docker push $REPOSITORY_URI:latest
       - docker push $REPOSITORY_URI:$IMAGE_TAG
-      - echo writing images definitions file...
-     #### #- docker push $608970462845.dkr.ecr.eu-west-2.amazonaws.com/$IMAGE_REPO_NAME:$CODEBUILD_RESOLVED_SOURCE_VERSION####
+      - echo Writing image definitions file...
       - printf '[{"name":"demoapp","imageUri":"%s"}]' $REPOSITORY_URI:$IMAGE_TAG > imagedefinitions.json
+      - cat imagedefinitions.json 
 artifacts:
     files: imagedefinitions.json
