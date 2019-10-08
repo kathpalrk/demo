@@ -1,0 +1,21 @@
+{
+  "taskDefinition": {
+    "family": "demo",
+    "containerDefinitions": [
+      {
+        "name": "demo",
+        "image": "608970462845.dkr.ecr.eu-west-2.amazonaws.com/mydemo",
+        "cpu": 100,
+        "portMappings": [
+          {
+            "protocol": "tcp",
+            "containerPort": 80,
+            "hostPort": 80
+          }
+        ],
+        "memory": 128,
+        "essential": true
+      }
+    ]
+  }
+}
