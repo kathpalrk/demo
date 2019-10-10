@@ -1,9 +1,9 @@
 {
   "taskDefinition": {
-    "family": "demo",
+    "family": "demoapp",
     "containerDefinitions": [
       {
-        "name": "demo",
+        "name": "demoapp",
         "image": "608970462845.dkr.ecr.eu-west-2.amazonaws.com/mydemo",
         "cpu": 100,
         "portMappings": [
